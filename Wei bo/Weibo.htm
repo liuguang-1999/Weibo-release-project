@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="./CSS/weibo.css">
+</head>
+
+<body>
+    <div class="weibo">
+        <textarea class="weibo-text" id="tet"></textarea>
+        <input class="weibo-btn" value="发布" type="button" id="btn">
+        <ul class="weibo-list" id="list">
+
+        </ul>
+    </div>
+</body>
+<script>
+    // 向服务器 获取数据 渲染在页面中
+    laoding();
+    var list = [];
+    function laoding() {
+        var laod = localStorage.getItem("jinqu")
+        if (laod !== null) {
+            $("#list").empty()
+            var arr = JSON.parse(laod)
+            arr.forEach((itme) => {
+                str = `<li><p>${itme.neirong}</p><span data-sf=${itme.sf}>删除</span></li>`
+                $("#list").append(str)
+            });
+        }
+    }
+
+    // 向服务器发起存储数据
+    $("#btn").click(function () {
+        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 本地里操做
+        var sf = Math.random() + "_" + Date.now()
+        var va = $("#tet").val()
+        var str = `<li><p>${va}</p><span data-sf=${sf}>删除</span></li>`
+        $("#list").prepend(str)
+        $("#tet").val("")
+        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 服务器存储操做
+        var obj = {
+            neirong: va,
+            sf: sf
+        }
+        list.unshift(obj)
+        var arr = JSON.stringify(list)
+        localStorage.setItem("jinqu", arr)
+        laoding()
+    })
+
+    // 删除操做
+    $("#list").on("click", "span", function () {
+        // $(this).parent().remove();
+        var val = $(this).attr("data-sf")
+        for (var i = 0; i < list.length; i++) {
+            if (list[i].sf == val) {
+                list.splice(i, 1);
+                break;
+            }
+        }
+        var arr = JSON.stringify(list)
+        localStorage.setItem("jinqu", arr)
+        laoding();
+    })
+    // 点击回车 发送数据
+    tet.onkeydown = (e) => {
+        if (e.keyCode == 13) {
+            $("#btn").click();
+        }
+    }
+</script>
+
+</html>
