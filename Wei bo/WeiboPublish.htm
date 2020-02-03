@@ -20,24 +20,24 @@
     </div>
 </body>
 <script>
-    // 向服务器 获取数据 渲染在页面中
-    laoding();
+
+    // 定义一个全局变量 空数组
     var list = [];
-    function laoding() {
-        var laod = localStorage.getItem("jinqu")
-        if (laod !== null) {
+    load()
+    function load() {
+        var load = localStorage.getItem("layin")
+        if (load !== null) {
             $("#list").empty()
-            var arr = JSON.parse(laod)
-            arr.forEach((itme) => {
+            list = JSON.parse(load)
+            list.forEach((itme) => {
                 str = `<li><p>${itme.neirong}</p><span data-sf=${itme.sf}>删除</span></li>`
                 $("#list").append(str)
             });
         }
     }
-
     // 向服务器发起存储数据
     $("#btn").click(function () {
-        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 本地里操做
+        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ DOM操做
         var sf = Math.random() + "_" + Date.now()
         var va = $("#tet").val()
         var str = `<li><p>${va}</p><span data-sf=${sf}>删除</span></li>`
@@ -49,14 +49,11 @@
             sf: sf
         }
         list.unshift(obj)
-        var arr = JSON.stringify(list)
-        localStorage.setItem("jinqu", arr)
-        laoding()
+        var str = JSON.stringify(list)
+        localStorage.setItem("layin", str)
     })
-
     // 删除操做
     $("#list").on("click", "span", function () {
-        // $(this).parent().remove();
         var val = $(this).attr("data-sf")
         for (var i = 0; i < list.length; i++) {
             if (list[i].sf == val) {
@@ -64,9 +61,9 @@
                 break;
             }
         }
-        var arr = JSON.stringify(list)
-        localStorage.setItem("jinqu", arr)
-        laoding();
+        var str = JSON.stringify(list)
+        localStorage.setItem("layin", str)
+        load()
     })
     // 点击回车 发送数据
     tet.onkeydown = (e) => {
@@ -74,6 +71,8 @@
             $("#btn").click();
         }
     }
+
+
 </script>
 
 </html>
