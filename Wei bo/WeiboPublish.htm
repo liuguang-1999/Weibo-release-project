@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script src="./JS/Weibo.js"></script>
     <link rel="stylesheet" href="./CSS/weibo.css">
 </head>
 
@@ -20,51 +21,16 @@
     </div>
 </body>
 <script>
-
-    // 定义一个全局变量 空数组
-    var list = [];
-    load()
-    function load() {
-        var load = localStorage.getItem("layin")
-        if (load !== null) {
-            $("#list").empty()
-            list = JSON.parse(load)
-            list.forEach((itme) => {
-                str = `<li><p>${itme.neirong}</p><span data-sf=${itme.sf}>删除</span></li>`
-                $("#list").append(str)
-            });
-        }
-    }
+    // 刚进网页或刷新网页 函数执行重新渲染数据
+    method.load();
     // 向服务器发起存储数据
     $("#btn").click(function () {
-        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ DOM操做
-        var sf = Math.random() + "_" + Date.now()
-        var va = $("#tet").val()
-        var str = `<li><p>${va}</p><span data-sf=${sf}>删除</span></li>`
-        $("#list").prepend(str)
-        $("#tet").val("")
-        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 服务器存储操做
-        var obj = {
-            neirong: va,
-            sf: sf
-        }
-        list.unshift(obj)
-        var str = JSON.stringify(list)
-        localStorage.setItem("layin", str)
+        method.memory();
     })
+
     // 删除操做
-    $("#list").on("click", "span", function () {
-        var val = $(this).attr("data-sf")
-        for (var i = 0; i < list.length; i++) {
-            if (list[i].sf == val) {
-                list.splice(i, 1);
-                break;
-            }
-        }
-        var str = JSON.stringify(list)
-        localStorage.setItem("layin", str)
-        load()
-    })
+    method.delete();
+
     // 点击回车 发送数据
     tet.onkeydown = (e) => {
         if (e.keyCode == 13) {
